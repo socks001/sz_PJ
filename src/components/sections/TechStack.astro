@@ -158,7 +158,9 @@ const groups: StackGroup[] = [
                       </span>
                       <span class="entry-use">{item.use}</span>
                     </summary>
-                    <p class="entry-reason">{item.reason}</p>
+                    <div class="entry-reason">
+                      <p class="entry-reason-inner">{item.reason}</p>
+                    </div>
                   </details>
                 </li>
               ))}
@@ -281,11 +283,25 @@ const groups: StackGroup[] = [
   }
 
   .entry-reason {
+    contain: layout paint;
+    overflow: clip;
+  }
+
+  .entry-reason-inner {
     padding-bottom: var(--layout-stack-row-inset);
     color: var(--color-text-secondary);
     font-size: var(--text-body-size);
     line-height: var(--text-body-leading);
-    overflow: hidden;
+  }
+
+  .entry-reason.is-animating {
+    will-change: height;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .entry-plus {
+      transition: none;
+    }
   }
 
   @media (hover: hover) and (pointer: fine) {
