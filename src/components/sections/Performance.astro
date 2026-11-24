@@ -1,0 +1,203 @@
+---
+import SectionHeader from '../ui/SectionHeader.astro';
+
+interface Metric {
+  name: string;
+  target: string;
+  unit: string;
+}
+
+const metrics: Metric[] = [
+  { name: '首屏 JS 体积（gzip）', target: '≤ 60', unit: 'KB' },
+  { name: '最大内容绘制 LCP', target: '≤ 2.0', unit: 's' },
+  { name: '累计布局偏移 CLS', target: '≤ 0.05', unit: '—' },
+  { name: '交互到下一次绘制 INP', target: '≤ 200', unit: 'ms' },
+  { name: '滚动场景帧率', target: '≥ 55', unit: 'fps' },
+  { name: '首屏图片总量', target: '≤ 80', unit: 'KB' },
+];
+
+const caliber = [
+  { label: '设备', value: '中端安卓真机（4 GB 内存 / 入门级 SoC）+ Lighthouse 移动端模拟' },
+  {
+    label: '网络',
+    value: 'Lighthouse 移动端默认节流：下行 1.6 Mbps、RTT 150 ms、CPU 4× 降速；真机另记网络类型与信号强度',
+  },
+  {
+    label: '工具',
+    value: 'Lighthouse（CI 内由 @lhci/cli 锁定版本）+ Chrome DevTools Performance',
+  },
+  { label: '日期', value: '待测' },
+  { label: '次数', value: '每项 3 次取样取中位数；帧率取连续滚动 10 s 的均值' },
+  { label: '原始报告', value: 'reports/perf/【待填：首测日期】/（Lighthouse JSON + 帧率录制）' },
+];
+---
+
+<section id="perf" class="section">
+  <div class="container">
+    <SectionHeader
+      eyebrow="PERFORMANCE"
+      title="性能指标"
+      description="目标值为验收阈值，未实测的指标一律显示待测。"
+    />
+
+    <ul class="metrics" data-reveal="metric">
+      {
+        metrics.map((metric) => (
+          <li class="metric" data-reveal-item data-metric data-target={metric.target}>
+            <p class="metric-name">{metric.name}</p>
+            <p class="metric-value" data-metric-value>
+              待测
+            </p>
+            <p class="metric-unit">{metric.unit}</p>
+            <div class="metric-meta">
+              <p>目标 {metric.target} {metric.unit === '—' ? '' : metric.unit}</p>
+              <p class="metric-status">
+                <span class="status-dot" aria-hidden="true"></span>
+                待测
+              </p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+
+    <details class="caliber">
+      <summary>
+        <span>测量环境与口径</span>
+        <span class="caliber-plus" aria-hidden="true">+</span>
+      </summary>
+      <dl class="caliber-list">
+        {
+          caliber.map((item) => (
+            <div class="caliber-row">
+              <dt>{item.label}</dt>
+              <dd>{item.value}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </details>
+  </div>
+</section>
+
+<style>
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--layout-metric-gap);
+    margin-top: var(--layout-section-header-gap);
+  }
+
+  .metric {
+    padding: var(--space-2);
+    background: var(--color-bg-elevated);
+    border-radius: var(--radius-card);
+  }
+
+  .metric-name {
+    color: var(--color-text-secondary);
+    font-size: var(--text-caption-size);
+    line-height: var(--text-caption-leading);
+  }
+
+  .metric-value {
+    margin-top: var(--space-2);
+    font-size: var(--text-number-size);
+    line-height: var(--text-number-leading);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .metric-unit {
+    margin-top: var(--space-1);
+    color: var(--color-text-secondary);
+    font-size: var(--text-caption-size);
+    line-height: var(--text-caption-leading);
+  }
+
+  .metric-meta {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    margin-top: var(--layout-metric-meta-gap);
+    color: var(--color-text-tertiary);
+    font-size: var(--text-caption-size);
+    line-height: var(--text-caption-leading);
+  }
+
+  .metric-status {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    color: var(--color-text-secondary);
+  }
+
+  .caliber {
+    margin-top: var(--space-4);
+  }
+
+  .caliber > summary {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-1);
+    padding-block: var(--space-2);
+    border-top: var(--border-hairline) solid var(--color-border-subtle);
+    border-bottom: var(--border-hairline) solid var(--color-border-subtle);
+    list-style: none;
+    cursor: pointer;
+    font-size: var(--text-body-size);
+    line-height: var(--text-body-leading);
+    font-weight: 500;
+  }
+
+  .caliber > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .caliber-plus {
+    margin-left: auto;
+    font-family: ui-monospace, 'SF Mono', 'Roboto Mono', Menlo, Consolas, monospace;
+    font-size: 16px;
+    line-height: 1;
+    color: var(--color-text-tertiary);
+  }
+
+  .caliber[open] .caliber-plus {
+    transform: rotate(45deg);
+  }
+
+  .caliber-list {
+    display: grid;
+    gap: var(--space-2);
+    padding-top: var(--space-3);
+  }
+
+  .caliber-row dt {
+    color: var(--color-text-tertiary);
+    font-size: var(--text-caption-size);
+    line-height: var(--text-caption-leading);
+  }
+
+  .caliber-row dd {
+    color: var(--color-text-secondary);
+    font-size: var(--text-body-size);
+    line-height: var(--text-body-leading);
+  }
+
+  @media (min-width: 768px) {
+    .metrics {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .metric {
+      padding: var(--space-3);
+    }
+
+    .caliber-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: var(--space-5);
+    }
+  }
+</style>

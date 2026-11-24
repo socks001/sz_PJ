@@ -1,0 +1,126 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'PingFang SC', Roboto, 'Source Han Sans SC',
+    'Noto Sans SC', sans-serif;
+  text-size-adjust: 100%;
+  overflow-x: clip;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg-base);
+  color: var(--color-text-primary);
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-leading);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+ul,
+ol,
+figure,
+dl,
+dd {
+  margin: 0;
+  padding: 0;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+.container {
+  width: 100%;
+  max-width: var(--layout-container);
+  margin-inline: auto;
+  padding-inline: var(--layout-gutter);
+}
+
+.section {
+  padding-top: var(--layout-section-space);
+}
+
+section[id] {
+  scroll-margin-top: calc(var(--layout-anchor-offset) + env(safe-area-inset-top));
+}
+
+/* 首屏入场前由内联脚本标记，模块脚本接管后立即移除；2s 兜底恢复可见 */
+html[data-motion='pending'] .hero [data-hero] {
+  opacity: 0;
+}
+
+.mono {
+  font-family: ui-monospace, 'SF Mono', 'Roboto Mono', Menlo, Consolas, monospace;
+  font-size: var(--text-mono-size);
+  line-height: var(--text-mono-leading);
+}
+
+.status-dot {
+  display: inline-block;
+  flex: none;
+  width: var(--layout-status-dot);
+  height: var(--layout-status-dot);
+  border: var(--border-hairline) solid var(--color-text-tertiary);
+  border-radius: 50%;
+}
+
+.status-dot[data-state='solid'] {
+  background: var(--color-text-primary);
+  border-color: var(--color-text-primary);
+}
+
+.eyebrow {
+  font-family: ui-monospace, 'SF Mono', 'Roboto Mono', Menlo, Consolas, monospace;
+  font-size: var(--text-eyebrow-size);
+  line-height: var(--text-eyebrow-leading);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+/* 全局 toast：同时只存在 1 条，新提示替换旧提示（§5.7） */
+.toast {
+  position: fixed;
+  bottom: calc(var(--space-3) + env(safe-area-inset-bottom));
+  left: 50%;
+  z-index: 30;
+  max-width: calc(100vw - var(--space-4));
+  padding: var(--space-1) var(--space-2);
+  border: var(--border-hairline) solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--color-bg-elevated);
+  color: var(--color-text-primary);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-leading);
+  text-align: center;
+  opacity: 0;
+  transform: translate(-50%, var(--motion-toast-offset));
+  pointer-events: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-text-primary);
+  outline-offset: 2px;
+}

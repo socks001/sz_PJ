@@ -1,0 +1,227 @@
+/* 设计令牌：唯一来源见 2026-11-22/homepage-spec/outputs/homepage-spec.md §2 */
+
+:root {
+  /* 色彩：暗色背景与表面 */
+  --color-bg-base: #08090a;
+  --color-bg-elevated: #101214;
+  --color-border-subtle: #24282c;
+  --color-border-strong: #3a3f44;
+  --color-accent: #e8e6e1;
+  --color-nav-scrim: rgb(8 9 10 / 72%);
+  --color-glow: rgb(255 255 255 / 6%);
+
+  /* 文本明度：3 级 */
+  --color-text-primary: #f5f6f7;
+  --color-text-secondary: #9ba1a6;
+  --color-text-tertiary: #6b7176;
+
+  /* 字号阶梯（移动端） */
+  --text-display-size: 40px;
+  --text-display-leading: 44px;
+  --text-h2-size: 28px;
+  --text-h2-leading: 34px;
+  --text-h3-size: 20px;
+  --text-h3-leading: 26px;
+  --text-body-size: 15px;
+  --text-body-leading: 24px;
+  --text-caption-size: 13px;
+  --text-caption-leading: 20px;
+  --text-eyebrow-size: 11px;
+  --text-eyebrow-leading: 14px;
+  --text-number-size: 32px;
+  --text-number-leading: 36px;
+  --text-mono-size: 13px;
+  --text-mono-leading: 20px;
+
+  /* 间距：8 的倍数 */
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 48px;
+  --space-6: 64px;
+  --space-7: 96px;
+  --space-8: 128px;
+  --space-9: 160px;
+
+  /* 布局：容器、页边距与区块节奏（§2.4、§2.5） */
+  --layout-container: 1120px;
+  --layout-gutter: 20px;
+  --layout-nav-height: 56px;
+  --layout-nav-blur: 16px;
+  --layout-anchor-offset: 72px;
+  --layout-section-space: 96px;
+  --layout-section-header-gap: 40px;
+  --layout-control-height: 48px;
+  --layout-stack-group-gap: 48px;
+  --layout-stack-group-max: 520px;
+  --layout-stack-row-inset: 14px;
+  --layout-tag-gap: 12px;
+  --layout-scroll-line: 20px;
+  --layout-tradeoff-row-height: 64px;
+  --layout-motion-item-gap: 32px;
+  --layout-demo-aspect: 16 / 10;
+  --layout-demo-max: 480px;
+  --layout-demo-inset: 12px;
+  --layout-demo-icon: 20px;
+  --layout-tap-target: 44px;
+  --layout-icon-size: 24px;
+  --layout-status-dot: 8px;
+  --layout-menu-icon: 20px;
+  --layout-metric-gap: 12px;
+  --layout-metric-meta-gap: 12px;
+  --layout-matrix-row-min: 56px;
+  --layout-contact-max: 720px;
+  --layout-button-gap: 12px;
+  --radius-card: 16px;
+  --radius-pill: 999px;
+  --border-hairline: 1px;
+
+  /* 节点与联系区字号（§4.7、§4.8、§5.1） */
+  --text-node-size: 16px;
+  --text-node-leading: 24px;
+  --text-menu-size: 28px;
+  --text-menu-leading: 36px;
+  --text-email-size: 18px;
+  --text-email-leading: 26px;
+
+  /* 动效：时长与缓动 */
+  --duration-feedback: 120ms;
+  --duration-fast: 220ms;
+  --duration-base: 400ms;
+  --duration-slow: 640ms;
+  --duration-narrative: 1200ms;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* 动效：S1 载入时间轴与滚动联动（§4.1） */
+  --motion-hero-glow-duration: 700ms;
+  --motion-hero-eyebrow-delay: 100ms;
+  --motion-hero-eyebrow-duration: 500ms;
+  --motion-hero-eyebrow-offset: 12px;
+  --motion-hero-title-delay-1: 220ms;
+  --motion-hero-title-delay-2: 320ms;
+  --motion-hero-title-duration: 600ms;
+  --motion-hero-title-offset: 24px;
+  --motion-hero-lede-delay: 460ms;
+  --motion-hero-lede-duration: 500ms;
+  --motion-hero-lede-offset: 16px;
+  --motion-hero-tags-delay: 560ms;
+  --motion-hero-tags-duration: 450ms;
+  --motion-hero-tags-offset: 16px;
+  --motion-hero-actions-delay: 660ms;
+  --motion-hero-actions-duration: 450ms;
+  --motion-hero-actions-offset: 16px;
+  --motion-hero-hint-delay: 800ms;
+  --motion-hero-hint-duration: 400ms;
+  --motion-hero-hint-opacity: 0.5;
+  --motion-hero-hint-loop-delay: 1200ms;
+  --motion-hero-hint-offset: 3px;
+  --motion-hero-hint-loop-duration: 2600ms;
+  --motion-hero-exit-offset: -40px;
+  --motion-hero-exit-opacity: 0.15;
+  --motion-hero-exit-range: 0.7;
+  --motion-hero-glow-scale: 1.06;
+  --motion-parallax-max: 10px;
+  --motion-parallax-duration: 600ms;
+  --motion-press-scale: 0.97;
+  --motion-press-opacity: 0.9;
+  --motion-press-duration: 120ms;
+  --motion-press-release-duration: 180ms;
+
+  /* 动效：通用入场与细线（§4.2–§4.8） */
+  --motion-reveal-offset-lg: 32px;
+  --motion-reveal-offset: 24px;
+  --motion-reveal-offset-sm: 16px;
+  --motion-reveal-offset-xs: 12px;
+  --motion-reveal-duration: 640ms;
+  --motion-reveal-duration-sm: 400ms;
+  --motion-reveal-duration-xs: 380ms;
+  --motion-reveal-stagger: 70ms;
+  --motion-reveal-stagger-sm: 60ms;
+  --motion-reveal-stagger-lg: 90ms;
+  --motion-line-duration: 600ms;
+  --motion-count-duration: 1000ms;
+  --motion-metric-line-duration: 800ms;
+  --motion-pipeline-duration: 800ms;
+  --motion-pipeline-stagger: 120ms;
+
+  /* 动效：导航、浮层与滚动（§5.1、§5.5、§5.7） */
+  --motion-nav-duration: 240ms;
+  --motion-nav-scrim-threshold: 80px;
+  --motion-nav-hide-threshold: 120px;
+  --motion-nav-show-threshold: 40px;
+  --motion-nav-active-duration: 200ms;
+  --motion-menu-duration: 360ms;
+  --motion-menu-close-duration: 320ms;
+  --motion-menu-item-stagger: 60ms;
+  --motion-toast-in-duration: 200ms;
+  --motion-toast-hold-duration: 1600ms;
+  --motion-toast-out-duration: 200ms;
+  --motion-toast-offset: 16px;
+  --motion-accordion-duration: 320ms;
+  --motion-hover-duration: 220ms;
+  --motion-scroll-top-min: 400ms;
+  --motion-scroll-top-max: 700ms;
+  --motion-scrub-duration: 1000ms;
+
+  /* 动效：S4 演示区 */
+  --motion-demo-hold-duration: 600ms;
+  --motion-demo-nav-duration: 2400ms;
+  --motion-demo-replay-turn: 320ms;
+
+  /* 减弱动效：统一降级值（§5.5） */
+  --motion-reduced-duration: 300ms;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --layout-gutter: 32px;
+    --layout-section-space: 120px;
+    --layout-metric-gap: 16px;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    /* 字号阶梯（桌面端） */
+    --text-display-size: 64px;
+    --text-display-leading: 68px;
+    --text-h2-size: 44px;
+    --text-h2-leading: 50px;
+    --text-h3-size: 22px;
+    --text-h3-leading: 30px;
+    --text-body-size: 16px;
+    --text-body-leading: 26px;
+    --text-eyebrow-size: 12px;
+    --text-eyebrow-leading: 16px;
+    --text-number-size: 36px;
+    --text-number-leading: 40px;
+
+    /* 桌面端布局 */
+    --layout-gutter: 40px;
+    --layout-section-space: 160px;
+    --layout-stack-group-gap: 56px;
+    --layout-motion-item-gap: 40px;
+    --radius-card: 20px;
+    --text-email-size: 20px;
+    --text-email-leading: 28px;
+  }
+}
+
+/* 系统开启减弱动效：位移、视差、缩放与循环归零（§5.5） */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-hero-exit-offset: 0px;
+    --motion-hero-glow-scale: 1;
+    --motion-hero-hint-offset: 0px;
+    --motion-parallax-max: 0px;
+    --motion-press-scale: 1;
+    --motion-press-opacity: 1;
+    --motion-line-duration: 0ms;
+    --motion-accordion-duration: 160ms;
+    --motion-hover-duration: 0ms;
+    --motion-nav-active-duration: 0ms;
+  }
+}

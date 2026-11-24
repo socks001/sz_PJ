@@ -1,0 +1,308 @@
+---
+import SectionHeader from '../ui/SectionHeader.astro';
+
+interface StackItem {
+  name: string;
+  version?: string;
+  use: string;
+  reason: string;
+}
+
+interface StackGroup {
+  en: string;
+  zh: string;
+  items: StackItem[];
+}
+
+const groups: StackGroup[] = [
+  {
+    en: 'FRAMEWORK',
+    zh: '框架与语言',
+    items: [
+      {
+        name: 'Astro',
+        version: '5.x',
+        use: '静态站点框架，负责构建与岛屿调度',
+        reason:
+          '默认零客户端 JS、首屏只发 HTML；代价：生态与示例少于 Next.js，路由与数据需自行补齐',
+      },
+      {
+        name: 'TypeScript',
+        version: '5.9 strict',
+        use: '全站类型、动效状态机与构建脚本共用类型',
+        reason: '类型在构建期拦错；代价：每次改动多一步类型检查，状态机泛型偏重',
+      },
+      {
+        name: 'React',
+        version: '19.x',
+        use: '仅 2 个交互岛：技术栈手风琴、动效演示区',
+        reason: '组件模型熟悉、生态成熟；代价：首次水合增加约 45 KB gzip，其余区块保持零 JS',
+      },
+    ],
+  },
+  {
+    en: 'STYLING',
+    zh: '样式与渲染',
+    items: [
+      {
+        name: '原生 CSS（Astro scoped）',
+        version: 'CSS3，无预处理器',
+        use: '组件样式与布局，构建期抽取为单文件',
+        reason: '无运行时、无额外依赖；代价：没有工具类速写，复用全靠令牌与命名约定',
+      },
+      {
+        name: 'CSS 自定义属性',
+        version: 'tokens.css 单文件',
+        use: '颜色、间距、字号、动效时长的唯一来源',
+        reason: '与本文档令牌逐项对应，降级只改一处；代价：无编译期校验，拼错只能靠评审与视觉回归',
+      },
+      {
+        name: '渲染模式 SSG',
+        version: 'astro build',
+        use: '构建期产出 9 个区块的完整 HTML，零客户端路由',
+        reason: '首屏不依赖 JS，LCP 只受 HTML/CSS 影响；代价：内容变更必须重新构建，无服务端动态能力',
+      },
+      {
+        name: 'Web Animations API',
+        version: '浏览器原生 + IntersectionObserver',
+        use: '入场、重播与减弱动效降级',
+        reason: '零体积，可直接读系统偏好；代价：时间轴与错峰全部手写，复杂序列维护成本高于动画库',
+      },
+    ],
+  },
+  {
+    en: 'BUILD',
+    zh: '构建与质量',
+    items: [
+      {
+        name: 'Vite',
+        version: '7.x（Astro 内置）',
+        use: '开发服务器与产物打包，输出 dist/',
+        reason: '与 Astro 共用一套管线，HMR 快；代价：插件链受 Astro 版本约束，不能自由替换',
+      },
+      {
+        name: 'Node.js + pnpm',
+        version: '22 LTS / 10.x',
+        use: '构建运行时与依赖管理，锁文件固定版本',
+        reason: '22 LTS 维护期长，pnpm 安装快、锁文件严格；代价：必须全员统一 pnpm，混用其它包管理器会破坏锁文件',
+      },
+      {
+        name: '规范与类型检查',
+        version: 'astro check + Biome 2.x + Prettier 3（astro 插件）',
+        use: '类型、格式化、lint 在提交前与 CI 各跑一次',
+        reason: '单一二进制覆盖 TS/JSON/CSS，速度快；代价：Biome 不解析 .astro，模板格式化要靠 Prettier 插件补位',
+      },
+      {
+        name: '测试与 CI',
+        version: 'Vitest 3.x + Playwright 1.x + GitHub Actions',
+        use: '单元、E2E、体积门禁与 Lighthouse 均在 CI 执行',
+        reason: '断言风格统一，CI 跑真实浏览器；代价：需在 CI 下载浏览器，流水线多一次作业',
+      },
+    ],
+  },
+  {
+    en: 'DELIVERY',
+    zh: '部署与观测',
+    items: [
+      {
+        name: 'Cloudflare Pages',
+        use: '托管与发布，推送自动构建、PR 生成预览',
+        reason: '免费额度覆盖静态站点，响应头可编程；代价：国内直连质量不稳定，首屏 RTT 波动，且只使用平台默认域名',
+      },
+      {
+        name: '_headers 缓存策略',
+        version: 'HTTP 响应头配置',
+        use: 'HTML 协商缓存，带哈希资源长缓存',
+        reason: '更新即时生效、静态资源不再回源；代价：配置是平台私有语法，换托管需重写',
+      },
+      {
+        name: '质量门禁',
+        version: 'Lighthouse CI + size-limit',
+        use: 'CI 内校验性能目标与体积预算，超额即失败',
+        reason: '把目标变成可执行检查；代价：调紧目标必须同步改代码，不能只改文档',
+      },
+    ],
+  },
+];
+---
+
+<section id="stack" class="section">
+  <div class="container">
+    <SectionHeader
+      eyebrow="TECH STACK"
+      title="技术栈"
+      description="以下依赖与原生能力均已定稿落地，版本以 package.json 与锁文件为准。"
+    />
+
+    <div class="groups" data-reveal="group">
+      {
+        groups.map((group) => (
+          <section class="group" aria-labelledby={`stack-${group.en}`} data-reveal-item>
+            <h3 class="group-title" id={`stack-${group.en}`}>
+              <span class="group-en mono">{group.en}</span>
+              <span>{group.zh}</span>
+            </h3>
+            <span class="group-rule" aria-hidden="true" data-reveal-line></span>
+
+            <ul class="entries">
+              {group.items.map((item) => (
+                <li>
+                  <details class="entry">
+                    <summary>
+                      <span class="entry-head">
+                        <span class="entry-name">{item.name}</span>
+                        {item.version && <span class="entry-version mono">{item.version}</span>}
+                        <span class="entry-plus" aria-hidden="true">
+                          +
+                        </span>
+                      </span>
+                      <span class="entry-use">{item.use}</span>
+                    </summary>
+                    <p class="entry-reason">{item.reason}</p>
+                  </details>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .groups {
+    display: grid;
+    gap: var(--layout-stack-group-gap);
+    margin-top: var(--layout-section-header-gap);
+  }
+
+  .group-title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-1);
+    font-size: var(--text-h3-size);
+    line-height: var(--text-h3-leading);
+    font-weight: 600;
+  }
+
+  .group-en {
+    color: var(--color-text-tertiary);
+    font-size: var(--text-eyebrow-size);
+    line-height: var(--text-eyebrow-leading);
+    letter-spacing: 0.12em;
+  }
+
+  .group-rule {
+    display: block;
+    height: var(--border-hairline);
+    margin-top: var(--space-2);
+    background: var(--color-border-subtle);
+    transform-origin: left center;
+  }
+
+  .entries {
+    margin-top: var(--space-1);
+  }
+
+  .entries li + li {
+    border-top: var(--border-hairline) solid var(--color-border-subtle);
+  }
+
+  .entry > summary {
+    display: block;
+    padding-block: var(--layout-stack-row-inset);
+    list-style: none;
+    cursor: pointer;
+    transition: background-color var(--duration-feedback) ease;
+  }
+
+  .entry {
+    position: relative;
+  }
+
+  .entry::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(var(--space-1) * -1);
+    width: 2px;
+    background: var(--color-border-strong);
+    opacity: 0;
+    transition: opacity var(--motion-hover-duration) var(--ease-out);
+    pointer-events: none;
+  }
+
+  .entry > summary:active {
+    background: var(--color-bg-elevated);
+  }
+
+  .entry > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .entry-head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-1);
+  }
+
+  .entry-name {
+    font-size: var(--text-body-size);
+    line-height: var(--text-body-leading);
+    font-weight: 500;
+  }
+
+  .entry-version {
+    color: var(--color-text-secondary);
+  }
+
+  .entry-plus {
+    margin-left: auto;
+    font-family: ui-monospace, 'SF Mono', 'Roboto Mono', Menlo, Consolas, monospace;
+    font-size: 16px;
+    line-height: 1;
+    color: var(--color-text-tertiary);
+    transition: transform var(--motion-accordion-duration) var(--ease-in-out);
+  }
+
+  .entry[open] .entry-plus {
+    transform: rotate(45deg);
+  }
+
+  .entry-use {
+    display: block;
+    margin-top: var(--space-1);
+    color: var(--color-text-secondary);
+    font-size: var(--text-caption-size);
+    line-height: var(--text-caption-leading);
+  }
+
+  .entry-reason {
+    padding-bottom: var(--layout-stack-row-inset);
+    color: var(--color-text-secondary);
+    font-size: var(--text-body-size);
+    line-height: var(--text-body-leading);
+    overflow: hidden;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .entry:hover::before {
+      opacity: 1;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .groups {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: var(--space-6);
+      row-gap: var(--layout-stack-group-gap);
+    }
+
+    .group {
+      max-width: var(--layout-stack-group-max);
+    }
+  }
+</style>

@@ -1,0 +1,365 @@
+---
+import SectionHeader from '../ui/SectionHeader.astro';
+
+interface Layer {
+  name: string;
+  duty: string;
+  path: string;
+}
+
+interface Tradeoff {
+  point: string;
+  choice: string;
+  rejected: string;
+  reason: string;
+  cost: string;
+}
+
+const layers: Layer[] = [
+  { name: '页面层', duty: '单页入口，按 §3.1 顺序组合 9 个区块', path: 'src/pages/index.astro' },
+  {
+    name: '组件层',
+    duty: '原子 UI 与 2 个交互岛，只接收数据不取数',
+    path: 'src/components/（ui / sections / islands）',
+  },
+  {
+    name: '样式层',
+    duty: '令牌与组件级样式，无运行时 CSS',
+    path: 'src/styles/tokens.css + 组件 scoped style',
+  },
+  {
+    name: '内容层',
+    duty: '技术栈、指标、兼容矩阵、构建信息的数据源',
+    path: 'src/data/*.ts、src/data/build.json',
+  },
+];
+
+const tradeoffs: Tradeoff[] = [
+  {
+    point: '架构形态',
+    choice: 'Astro SSG 静态预渲染',
+    rejected: 'Next.js 全量 SSR',
+    reason: '单页静态内容，首屏不必等待 JS 执行',
+    cost: '无服务端能力，改动内容需重新构建',
+  },
+  {
+    point: '交互实现',
+    choice: '原生 TS + 2 个 React 岛',
+    rejected: '全站 React 或 Vue',
+    reason: '首屏 JS 压在 60 KB 以内',
+    cost: '跨岛共享状态自行处理，组件复用面变窄',
+  },
+  {
+    point: '动画实现',
+    choice: 'CSS + WAAPI',
+    rejected: 'Framer Motion / GSAP',
+    reason: '零依赖，可直接读系统减弱动效',
+    cost: '时间轴与错峰逻辑全部自写',
+  },
+  {
+    point: '样式方案',
+    choice: '原生 CSS + 令牌变量',
+    rejected: 'Tailwind / CSS-in-JS',
+    reason: '产物小，令牌与文档一一对应',
+    cost: '缺工具类速写，命名与复用靠约定',
+  },
+];
+
+const engineering = [
+  '类型检查前置（astro check）',
+  '锁文件固定依赖（pnpm）',
+  '提交前 lint（Biome + lint-staged）',
+  '构建内体积与 Lighthouse 门禁',
+];
+---
+
+<section id="arch" class="section">
+  <div class="container">
+    <SectionHeader eyebrow="ARCHITECTURE" title="架构与工程化" />
+
+    <p class="conclusion">
+      单页静态站点，构建期产出完整 HTML，仅 2 个交互岛在浏览器水合，其余交互由原生脚本承担。
+    </p>
+
+    <h3 class="block-title">分层</h3>
+    <ol class="layers" data-reveal="layer">
+      {
+        layers.map((layer) => (
+          <li class="layer" data-reveal-item>
+            <h4 class="layer-name">{layer.name}</h4>
+            <p class="layer-duty">{layer.duty}</p>
+            <p class="layer-path mono">{layer.path}</p>
+          </li>
+        ))
+      }
+    </ol>
+
+    <h3 class="block-title">关键取舍</h3>
+
+    <div class="tradeoff-cards" data-reveal="tradeoff">
+      {
+        tradeoffs.map((item) => (
+          <article class="tradeoff-card" data-reveal-item>
+            <h4 class="tradeoff-point">{item.point}</h4>
+            <dl class="tradeoff-fields">
+              <div>
+                <dt>选择</dt>
+                <dd>{item.choice}</dd>
+              </div>
+              <div>
+                <dt>理由</dt>
+                <dd>{item.reason}</dd>
+              </div>
+              <div>
+                <dt>代价</dt>
+                <dd>{item.cost}</dd>
+              </div>
+            </dl>
+            <p class="tradeoff-rejected">放弃：{item.rejected}</p>
+          </article>
+        ))
+      }
+    </div>
+
+    <table class="tradeoff-table" data-reveal="tradeoff">
+      <thead>
+        <tr>
+          <th scope="col">决策点</th>
+          <th scope="col">最终选择</th>
+          <th scope="col">放弃的方案</th>
+          <th scope="col">理由</th>
+          <th scope="col">代价</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          tradeoffs.map((item) => (
+            <tr data-reveal-item>
+              <th scope="row">{item.point}</th>
+              <td>{item.choice}</td>
+              <td>{item.rejected}</td>
+              <td>{item.reason}</td>
+              <td>{item.cost}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+
+    <h3 class="block-title">工程化要点</h3>
+    <ul class="engineering">
+      {
+        engineering.map((point) => (
+          <li>{point}</li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .conclusion {
+    max-width: 34em;
+    margin-top: var(--space-3);
+    font-size: var(--text-body-size);
+    line-height: var(--text-body-leading);
+  }
+
+  .block-title {
+    margin-top: var(--space-7);
+    font-size: var(--text-h3-size);
+    line-height: var(--text-h3-leading);
+    font-weight: 600;
+  }
+
+  .layers {
+    display: grid;
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+  }
+
+  .layer-name {
+    font-size: var(--text-body-size);
+    line-height: var(--text-body-leading);
+    font-weight: 600;
+  }
+
+  .layer-duty {
+    margin-top: var(--space-1);
+    color: var(--color-text-secondary);
+    font-size: var(--text-body-size);
+    line-height: var(--text-body-leading);
+  }
+
+  .layer-path {
+    margin-top: var(--space-1);
+    color: var(--color-text-tertiary);
+    font-size: var(--text-caption-size);
+    line-height: var(--text-caption-leading);
+  }
+
+  .tradeoff-cards {
+    display: grid;
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+  }
+
+  .tradeoff-card {
+    padding: var(--space-3);
+    background: var(--color-bg-elevated);
+    border-radius: var(--radius-card);
+  }
+
+  .tradeoff-point {
+    font-size: var(--text-h3-size);
+    line-height: var(--text-h3-leading);
+    font-weight: 600;
+  }
+
+  .tradeoff-fields {
+    display: grid;
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+  }
+
+  .tradeoff-fields dt {
+    color: var(--color-text-tertiary);
+    font-size: var(--text-caption-size);
+    line-height: var(--text-caption-leading);
+  }
+
+  .tradeoff-fields dd {
+    color: var(--color-text-secondary);
+    font-size: var(--text-body-size);
+    line-height: var(--text-body-leading);
+  }
+
+  .tradeoff-rejected {
+    margin-top: var(--space-2);
+    color: var(--color-text-tertiary);
+    font-size: var(--text-caption-size);
+    line-height: var(--text-caption-leading);
+  }
+
+  .tradeoff-table {
+    display: none;
+  }
+
+  .engineering {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-2);
+    margin-top: var(--space-3);
+    color: var(--color-text-secondary);
+    font-size: var(--text-caption-size);
+    line-height: var(--text-caption-leading);
+  }
+
+  .engineering li:not(:first-child)::before {
+    content: '·';
+    margin-right: var(--space-2);
+    color: var(--color-text-tertiary);
+  }
+
+  @media (min-width: 1024px) {
+    .layers {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      column-gap: var(--space-4);
+      margin-top: var(--space-4);
+    }
+
+    .tradeoff-card {
+      padding: var(--space-4);
+    }
+
+    .tradeoff-cards {
+      display: none;
+    }
+
+    .tradeoff-table {
+      display: table;
+      width: 100%;
+      margin-top: var(--space-3);
+      border-collapse: collapse;
+      table-layout: fixed;
+      text-align: left;
+      font-size: var(--text-body-size);
+      line-height: var(--text-body-leading);
+    }
+
+    .tradeoff-table th,
+    .tradeoff-table td {
+      height: var(--layout-tradeoff-row-height);
+      padding-inline: var(--space-2);
+      vertical-align: middle;
+      font-weight: 400;
+    }
+
+    .tradeoff-table thead th {
+      height: auto;
+      padding-block: var(--space-1);
+      color: var(--color-text-tertiary);
+      font-size: var(--text-caption-size);
+      line-height: var(--text-caption-leading);
+    }
+
+    .tradeoff-table thead th:first-child,
+    .tradeoff-table tbody th:first-child,
+    .tradeoff-table tbody td:first-child {
+      padding-left: 0;
+    }
+
+    .tradeoff-table tbody th {
+      font-weight: 500;
+    }
+
+    .tradeoff-table tbody td {
+      color: var(--color-text-secondary);
+    }
+
+    .tradeoff-table tbody tr {
+      border-top: var(--border-hairline) solid var(--color-border-subtle);
+    }
+
+    .tradeoff-table tbody tr:last-child {
+      border-bottom: var(--border-hairline) solid var(--color-border-subtle);
+    }
+
+    .tradeoff-table tbody th:first-child {
+      position: relative;
+    }
+
+    .tradeoff-table tbody th:first-child::before {
+      content: '';
+      position: absolute;
+      top: var(--space-1);
+      bottom: var(--space-1);
+      left: calc(var(--space-1) * -1);
+      width: 2px;
+      background: var(--color-border-strong);
+      transform: scaleY(0);
+      transform-origin: bottom center;
+      transition: transform var(--motion-hover-duration) var(--ease-out);
+      pointer-events: none;
+    }
+
+    .tradeoff-table tbody td {
+      transition: color var(--motion-hover-duration) var(--ease-out);
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .tradeoff-table tbody tr:hover th:first-child::before {
+        transform: scaleY(1);
+      }
+
+      .tradeoff-table tbody tr:hover td {
+        color: var(--color-text-primary);
+      }
+    }
+
+    .engineering {
+      flex-wrap: nowrap;
+      margin-top: var(--space-4);
+    }
+  }
+</style>

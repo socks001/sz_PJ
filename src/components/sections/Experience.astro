@@ -1,0 +1,204 @@
+---
+import SectionHeader from '../ui/SectionHeader.astro';
+
+interface TimelineItem {
+  kind: string;
+  time?: string;
+  title: string;
+  detail: string;
+  tags?: string[];
+}
+
+const items: TimelineItem[] = [
+  {
+    kind: '工作',
+    time: '2026.06–2026.09',
+    title: '湖南腾速科技有限公司',
+    detail: '前端开发',
+    tags: ['页面开发', '性能优化', '需求评审'],
+  },
+  {
+    kind: '实习',
+    time: '2025.05–2025.10',
+    title: '长沙乐智网络科技有限公司',
+    detail: '前端开发实习',
+    tags: ['页面开发', '性能优化', '协作交付'],
+  },
+  {
+    kind: '项目',
+    title: '珊瑚管理后台',
+    detail: '前端开发',
+    tags: ['Vue 2', 'Element UI', 'Vuex', 'ECharts'],
+  },
+  {
+    kind: '项目',
+    title: '多源数据整合一表通系统',
+    detail: '前端开发',
+    tags: ['Vue 3', 'TypeScript', 'Pinia', 'ECharts'],
+  },
+  {
+    kind: '项目',
+    title: '企业通用后台管理系统',
+    detail: '前端开发',
+    tags: ['Vue 3', 'Element Plus', 'ECharts'],
+  },
+  {
+    kind: '项目',
+    title: '云阅书城',
+    detail: '前端开发',
+    tags: ['Vue 3', 'Vant', 'Pinia'],
+  },
+  {
+    kind: '教育',
+    time: '2022.09–2026.06',
+    title: '湖南农业大学',
+    detail: '计算机科学与技术',
+  },
+];
+---
+
+<section id="experience" class="section">
+  <div class="container">
+    <div data-reveal="title">
+      <SectionHeader
+        eyebrow="EXPERIENCE"
+        title="经历"
+        description="一年前端开发经验：一段工作、一段实习、四个项目，教育与证书附在末尾。"
+      />
+    </div>
+
+    <ol class="timeline" data-reveal="group">
+      {
+        items.map((item) => (
+          <li class="row" data-reveal-item>
+            <p class="row-meta">
+              <span class="kind">{item.kind}</span>
+              {item.time && <span class="time mono">{item.time}</span>}
+            </p>
+            <div class="row-main">
+              <div class="row-head">
+                <h3 class="row-title">{item.title}</h3>
+                <p class="row-detail">{item.detail}</p>
+              </div>
+              {item.tags && (
+                <ul class="row-tags">
+                  {item.tags.map((tag) => (
+                    <li>{tag}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+
+    <p class="certificates" data-reveal="layer">
+      <span class="certificates-label">证书</span>
+      <span>人工智能高级训练师 · 鸿蒙应用开发者高级认证</span>
+    </p>
+  </div>
+</section>
+
+<style>
+  .timeline {
+    margin-top: var(--layout-section-header-gap);
+    border-top: var(--border-hairline) solid var(--color-border-subtle);
+  }
+
+  .row {
+    display: grid;
+    gap: var(--space-1);
+    padding-block: var(--space-2);
+    border-bottom: var(--border-hairline) solid var(--color-border-subtle);
+  }
+
+  .row-meta {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-2);
+  }
+
+  .kind {
+    color: var(--color-text-tertiary);
+    font-size: var(--text-caption-size);
+    line-height: var(--text-caption-leading);
+    letter-spacing: 0.08em;
+  }
+
+  .time {
+    color: var(--color-text-secondary);
+  }
+
+  .row-main {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    min-width: 0;
+  }
+
+  .row-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-1) var(--space-2);
+    min-width: 0;
+  }
+
+  .row-title {
+    font-size: var(--text-body-size);
+    line-height: var(--text-body-leading);
+    font-weight: 600;
+  }
+
+  .row-detail {
+    color: var(--color-text-secondary);
+    font-size: var(--text-caption-size);
+    line-height: var(--text-caption-leading);
+  }
+
+  .row-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) 0;
+    color: var(--color-text-secondary);
+    font-family: ui-monospace, 'SF Mono', 'Roboto Mono', Menlo, Consolas, monospace;
+    font-size: var(--text-mono-size);
+    line-height: var(--text-mono-leading);
+  }
+
+  .row-tags li:not(:first-child)::before {
+    content: '·';
+    margin-inline: var(--layout-tag-gap);
+    color: var(--color-text-tertiary);
+  }
+
+  .certificates {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-2);
+    margin-top: var(--space-3);
+    color: var(--color-text-tertiary);
+    font-size: var(--text-caption-size);
+    line-height: var(--text-caption-leading);
+  }
+
+  .certificates-label {
+    color: var(--color-text-secondary);
+  }
+
+  @media (min-width: 1024px) {
+    .row {
+      grid-template-columns: 200px minmax(0, 1fr);
+      column-gap: var(--space-5);
+      align-items: start;
+    }
+
+    .row-meta {
+      flex-direction: column;
+      gap: var(--space-1);
+    }
+  }
+</style>

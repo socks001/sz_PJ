@@ -1,0 +1,70 @@
+---
+import '../styles/tokens.css';
+import '../styles/base.css';
+import SiteHeader from '../components/layout/SiteHeader.astro';
+import SiteFooter from '../components/layout/SiteFooter.astro';
+import Hero from '../components/sections/Hero.astro';
+import Experience from '../components/sections/Experience.astro';
+import TechStack from '../components/sections/TechStack.astro';
+import Architecture from '../components/sections/Architecture.astro';
+import MotionShowcase from '../components/sections/MotionShowcase.astro';
+import Performance from '../components/sections/Performance.astro';
+import Compatibility from '../components/sections/Compatibility.astro';
+import Delivery from '../components/sections/Delivery.astro';
+import Contact from '../components/sections/Contact.astro';
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%2308090a'/%3E%3Crect x='4' y='4' width='8' height='8' fill='%23e8e6e1'/%3E%3C/svg%3E"
+    />
+    <title>舒展</title>
+    <meta
+      name="description"
+      content="舒展，前端开发，2026 届计算机科学与技术。个人技术样本：经历、技术栈、架构、动效、性能与构建部署。"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="zh_CN" />
+    <meta property="og:title" content="舒展" />
+    <meta
+      property="og:description"
+      content="舒展，前端开发，2026 届计算机科学与技术。个人技术样本：经历、技术栈、架构、动效、性能与构建部署。"
+    />
+    <script is:inline>
+      document.documentElement.dataset.motion = 'pending';
+      window.setTimeout(function () {
+        if (document.documentElement.dataset.motion === 'pending') {
+          delete document.documentElement.dataset.motion;
+        }
+      }, 2000);
+    </script>
+  </head>
+  <body>
+    <SiteHeader />
+
+    <main>
+      <Hero />
+      <Experience />
+      <TechStack />
+      <Architecture />
+      <MotionShowcase />
+      <Performance />
+      <Compatibility />
+      <Delivery />
+      <Contact />
+    </main>
+
+    <SiteFooter />
+
+    <div class="toast" role="status" aria-live="polite" aria-atomic="true" data-toast></div>
+
+    <script>
+      import '../scripts/motion';
+    </script>
+  </body>
+</html>

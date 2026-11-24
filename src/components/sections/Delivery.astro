@@ -1,0 +1,264 @@
+---
+import SectionHeader from '../ui/SectionHeader.astro';
+import build from '../../data/build.json';
+
+interface PipelineNode {
+  name: string;
+  description: string;
+}
+
+interface DeployField {
+  label: string;
+  value: string;
+  mono?: boolean;
+}
+
+const pipeline: PipelineNode[] = [
+  { name: '提交', description: 'push 到 main 或开 PR 触发，GitHub Actions 执行' },
+  {
+    name: '检查',
+    description: 'astro check、Biome check、Vitest、Playwright E2E、size-limit、Lighthouse CI',
+  },
+  { name: '构建', description: 'astro build（Vite 7），产物目录 dist/' },
+  {
+    name: '产物',
+    description: 'HTML + CSS + JS 合计 ≤ 300 KB（未压缩），文件数 ≤ 15（不含简历与 OG 图）',
+  },
+  { name: '部署', description: 'Cloudflare Pages：main 自动发布，PR 生成预览环境' },
+];
+
+const deployFields: DeployField[] = [
+  { label: '托管平台', value: 'Cloudflare Pages' },
+  {
+    label: '访问地址',
+    value: '平台分配的默认域名 <项目名>.pages.dev；本期使用该地址，不绑定自定义域名',
+  },
+  {
+    label: '缓存策略',
+    value:
+      'HTML public, max-age=0, must-revalidate；/_astro/* public, max-age=31536000, immutable；图片与 PDF public, max-age=604800',
+    mono: true,
+  },
+  {
+    label: '回滚方式',
+    value: '在 Cloudflare Pages 部署列表选择上一成功部署执行 Rollback，不产生新提交',
+  },
+  { label: '构建耗时', value: '目标 ≤ 120 s（CI 冷缓存）；页面填流水线实测值' },
+];
+---
+
+<section id="deploy" class="section">
+  <div class="container">
+    <SectionHeader
+      eyebrow="DELIVERY"
+      title="构建与部署"
+      description="发布只由 main 分支触发：仓库存在对应提交、质量门禁通过、Cloudflare Pages 发布成功。"
+    />
+
+    <h3 class="block-title">流水线</h3>
+    <div class="pipeline-wrap" data-pipeline>
+      <span class="pipeline-line" data-pipeline-line aria-hidden="true"></span>
+      <ol class="pipeline">
+        {
+          pipeline.map((node) => (
+            <li class="node" data-pipeline-node>
+              <span class="node-dot" aria-hidden="true">
+                <span class="node-dot-lit" data-node-lit></span>
+              </span>
+              <h4 class="node-name">{node.name}</h4>
+              <p class="node-description">{node.description}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+
+    <h3 class="block-title">部署信息</h3>
+    <dl class="deploy">
+      {
+        deployFields.map((field) => (
+          <div class="deploy-row">
+            <dt>{field.label}</dt>
+            <dd class={field.mono ? 'mono' : undefined}>{field.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+
+    <p class="build-line mono">
+      <span class="build-label">最近构建</span>
+      <span class="build-version">{build.version}</span>
+      <span class="build-commit">{build.commit}</span>
+      <span class="build-meta">
+        {build.commitMessage} · {build.builtAt} · 来源 {build.source}
+      </span>
+    </p>
+  </div>
+</section>
+
+<style>
+  .block-title {
+    margin-top: var(--space-7);
+    font-size: var(--text-h3-size);
+    line-height: var(--text-h3-leading);
+    font-weight: 600;
+  }
+
+  .pipeline-wrap {
+    position: relative;
+    margin-top: var(--space-3);
+  }
+
+  .pipeline {
+    position: relative;
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .pipeline-line {
+    position: absolute;
+    top: 6px;
+    bottom: 6px;
+    left: 3.5px;
+    width: var(--border-hairline);
+    background: var(--color-border-subtle);
+    transform-origin: top center;
+  }
+
+  .node {
+    position: relative;
+    padding-left: var(--space-3);
+  }
+
+  .node-dot {
+    position: absolute;
+    top: 6px;
+    left: 0;
+    width: var(--layout-status-dot);
+    height: var(--layout-status-dot);
+    border-radius: 50%;
+    background: var(--color-text-tertiary);
+  }
+
+  .node-dot-lit {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: var(--color-text-primary);
+    opacity: 0;
+  }
+
+  .node-name {
+    color: var(--color-text-tertiary);
+    font-size: var(--text-node-size);
+    line-height: var(--text-node-leading);
+    font-weight: 600;
+  }
+
+  .node[data-lit='true'] .node-name {
+    color: var(--color-text-primary);
+  }
+
+  .node-description {
+    margin-top: var(--space-1);
+    color: var(--color-text-secondary);
+    font-size: var(--text-caption-size);
+    line-height: var(--text-caption-leading);
+  }
+
+  .deploy {
+    margin-top: var(--space-2);
+  }
+
+  .deploy-row {
+    display: grid;
+    gap: var(--space-1);
+    padding-block: var(--space-2);
+    border-bottom: var(--border-hairline) solid var(--color-border-subtle);
+  }
+
+  .deploy-row:first-child {
+    border-top: var(--border-hairline) solid var(--color-border-subtle);
+  }
+
+  .deploy-row dt {
+    color: var(--color-text-tertiary);
+    font-size: var(--text-caption-size);
+    line-height: var(--text-caption-leading);
+  }
+
+  .deploy-row dd {
+    color: var(--color-text-secondary);
+    font-size: var(--text-body-size);
+    line-height: var(--text-body-leading);
+    overflow-wrap: anywhere;
+  }
+
+  .build-line {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-1);
+    margin-top: var(--space-5);
+    overflow: hidden;
+    white-space: nowrap;
+    color: var(--color-text-tertiary);
+    font-size: var(--text-caption-size);
+    line-height: var(--text-caption-leading);
+  }
+
+  .build-label {
+    flex: none;
+    color: var(--color-text-secondary);
+  }
+
+  .build-version,
+  .build-commit {
+    flex: none;
+    color: var(--color-text-secondary);
+  }
+
+  .build-meta {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  @media (min-width: 1024px) {
+    .pipeline {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      column-gap: var(--space-4);
+      row-gap: 0;
+    }
+
+    .pipeline-line {
+      top: 4px;
+      right: calc((100% - 4 * var(--space-4)) / 5 - 4px);
+      bottom: auto;
+      left: 4px;
+      width: auto;
+      height: var(--border-hairline);
+      transform-origin: left center;
+    }
+
+    .node {
+      padding-top: var(--space-3);
+      padding-left: 0;
+    }
+
+    .node-dot {
+      top: 0;
+      left: 0;
+    }
+
+    .deploy-row {
+      grid-template-columns: 32fr 68fr;
+      column-gap: var(--space-3);
+      align-items: baseline;
+    }
+
+    .deploy-row dt {
+      color: var(--color-text-secondary);
+    }
+  }
+</style>

@@ -1,0 +1,216 @@
+---
+import SectionHeader from '../ui/SectionHeader.astro';
+import MotionDemo from '../ui/MotionDemo.astro';
+
+interface MotionItem {
+  number: string;
+  name: string;
+  trigger: string;
+  points: [string, string];
+  level: string;
+  basis: string;
+  verify: string;
+}
+
+const items: MotionItem[] = [
+  {
+    number: '01',
+    name: '首屏编排序列',
+    trigger: '页面载入',
+    points: ['WAAPI 统一编排 8 个元素的延迟与时长', '单次播放，结束后不保留填充状态'],
+    level: '中',
+    basis: 'WAAPI 多元素时序编排',
+    verify: '刷新页面，观察首屏元素依次入场',
+  },
+  {
+    number: '02',
+    name: '滚动视差与纵深',
+    trigger: '滚动驱动',
+    points: ['滚动值只写入 transform，避免布局抖动', 'rAF 合帧，离屏后停止监听'],
+    level: '中',
+    basis: 'IntersectionObserver 驱动 transform 合成',
+    verify: '滚动首屏，观察光晕缩放与内容退场',
+  },
+  {
+    number: '03',
+    name: '共享元素转场',
+    trigger: '点击',
+    points: ['view-transition-name 标记共享卡片', 'startViewTransition 不可用时直接切换'],
+    level: '高',
+    basis: '需为不支持 View Transitions 的浏览器准备降级',
+    verify: '点击演示卡片，观察元素连续移动',
+  },
+  {
+    number: '04',
+    name: '减弱动效降级',
+    trigger: '系统设置',
+    points: ['matchMedia 监听 prefers-reduced-motion', '降级路径只保留透明度过渡'],
+    level: '高',
+    basis: 'matchMedia 运行时双路径',
+    verify: '开启系统减弱动效后重播，位移消失',
+  },
+  {
+    number: '05',
+    name: '导航随滚动显隐',
+    trigger: '滚动驱动',
+    points: ['滚动阈值 80px 触发，方向判断显隐', '仅过渡 transform 与透明度'],
+    level: '低',
+    basis: '单属性过渡 + 阈值防抖',
+    verify: '下滑隐藏导航，上滑立即出现',
+  },
+];
+---
+
+<section id="motion" class="section">
+  <div class="container">
+    <SectionHeader
+      eyebrow="MOTION"
+      title="动效与交互实现"
+      description="以下动效均可重播。"
+    />
+
+    <ol class="items" data-reveal="motion">
+      {
+        items.map((item) => (
+          <li class="item" data-reveal-item>
+            <div class="item-head">
+              <span class="item-number mono">{item.number}</span>
+              <div>
+                <h3 class="item-name">{item.name}</h3>
+                <p class="item-trigger">{item.trigger}</p>
+              </div>
+            </div>
+
+            <div class="demo-slot">
+              <MotionDemo number={item.number} name={item.name} />
+            </div>
+
+            <div class="item-body">
+              <ul class="points">
+                {item.points.map((point) => (
+                  <li>{point}</li>
+                ))}
+              </ul>
+
+              <div class="item-meta">
+                <p class="difficulty">
+                  <span class="status-dot" data-state="solid" aria-hidden="true" />
+                  {item.level} · {item.basis}
+                </p>
+                <p class="verify">验证：{item.verify}</p>
+              </div>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .items {
+    display: grid;
+    gap: var(--layout-motion-item-gap);
+    margin-top: var(--layout-section-header-gap);
+  }
+
+  .item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .item-head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+  }
+
+  .item-number {
+    color: var(--color-text-tertiary);
+  }
+
+  .item-name {
+    font-size: var(--text-h3-size);
+    line-height: var(--text-h3-leading);
+    font-weight: 600;
+  }
+
+  .item-trigger {
+    margin-top: var(--space-1);
+    color: var(--color-text-tertiary);
+    font-size: var(--text-caption-size);
+    line-height: var(--text-caption-leading);
+  }
+
+  .demo-slot {
+    min-width: 0;
+  }
+
+  .item-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .points {
+    display: grid;
+    gap: var(--space-1);
+    color: var(--color-text-secondary);
+    font-size: var(--text-body-size);
+    line-height: var(--text-body-leading);
+  }
+
+  .item-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-2);
+    color: var(--color-text-tertiary);
+    font-size: var(--text-caption-size);
+    line-height: var(--text-caption-leading);
+  }
+
+  .difficulty {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    color: var(--color-text-secondary);
+  }
+
+  .status-dot {
+    width: var(--layout-status-dot);
+    height: var(--layout-status-dot);
+  }
+
+  @media (min-width: 768px) {
+    .demo-slot {
+      max-width: var(--layout-demo-max);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .item {
+      display: grid;
+      grid-template-areas:
+        'head demo'
+        'body demo';
+      grid-template-columns: 58fr 42fr;
+      grid-template-rows: auto 1fr;
+      column-gap: var(--space-4);
+      row-gap: var(--space-2);
+    }
+
+    .item-head {
+      grid-area: head;
+    }
+
+    .demo-slot {
+      grid-area: demo;
+      align-self: start;
+    }
+
+    .item-body {
+      grid-area: body;
+    }
+  }
+</style>
